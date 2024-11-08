@@ -1,0 +1,127 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Downloader</title>
+    <style>
+    body {
+    background-color: #121212;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #1e1e1e;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+h1 {
+    text-align: center;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 4px;
+    background-color: #333333;
+    color: #ffffff;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #1db954;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #1aa34a;
+}
+
+#result {
+    margin-top: 20px;
+    text-align: center;
+}
+</style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Spotify Downloader</h1>
+        <input type="text" id="songId" placeholder="Masukkan URL lagu Spotify" />
+        <button id="downloadBtn">Download</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const downloadBtn = document.getElementById('downloadBtn');
+    const songIdInput = document.getElementById('songId');
+    const resultDiv = document.getElementById('result');
+
+    downloadBtn.addEventListener('click', function() {
+        const songId = songIdInput.value; // Menggunakan songId dari input
+
+        // Notifikasi SweetAlert saat proses download dimulai
+        Swal.fire({
+            title: 'Mengunduh...',
+            text: 'Silakan tunggu, sedang memproses permintaan.',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        const url = `https://spotify-downloader9.p.rapidapi.com/downloadSong?songId=${encodeURIComponent(songId)}`;
+        const xhr = new XMLHttpRequest();
+        xhr.withCredentials = true;
+
+        xhr.addEventListener('readystatechange', function () {
+            if (this.readyState === this.DONE) {
+                Swal.close(); // Menutup loading alert
+
+                if (this.status === 200) {
+                    const response = this.responseText; // Mengambil respons sebagai teks
+                    console.log(response); // Lihat respons dari API
+
+                    // Misalkan respons memiliki properti yang relevan
+                    // Anda mungkin perlu menyesuaikan logika ini sesuai dengan struktur respons
+                    resultDiv.innerHTML = `<pre>${response}</pre>`; // Menampilkan respons
+                    Swal.fire({
+                        title: 'Sukses!',
+                        text: 'Lagu berhasil ditemukan. Lihat konsol untuk detail.',
+                        icon: 'success'
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Gagal!',
+                        text: 'Terjadi kesalahan saat mengunduh. Coba lagi.',
+                        icon: 'error'
+                    });
+                }
+            }
+        });
+
+        xhr.open('GET', url);
+        xhr.setRequestHeader('x-rapidapi-key', 'f48af997d7msh2f7648e30aff159p19e43djsneca14f4f3217');
+        xhr.setRequestHeader('x-rapidapi-host', 'spotify-downloader9.p.rapidapi.com');
+
+        xhr.send(); // Mengirim permintaan
+    });
+});
+</script>
+</body>
+</html>
