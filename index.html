@@ -1,1180 +1,588 @@
-<!-- Created by Akira -->
-
-
+<!-- Created by Subhojati Dutta -->
 
 <!DOCTYPE html>
-
 <html lang="id">
-
-
-
 <head>
-
   <meta charset="UTF-8">
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css">
   <title>ChatGPT Akira-AI</title>
   <style>
-
     * {
-
       margin: 0;
-
       padding: 0;
-
       box-sizing: border-box;
-
     }
-
-
 
     body{
-
       background-color: #212121;
-
       color: #fff;
-
       display: flex;
-
       justify-content: center;
-
       align-items: flex-start;
-
       height: 90vh;
-
       margin: 0;
-
       overflow: hidden;
-
       font-family: "times new roman", serif;
-
     }
-
-
 
     .container {
-
       width: 100%;
-
       max-width: 600px;
-
       display: flex;
-
       flex-direction: column;
-
       justify-content: flex-end;
-
       height: 100%;
-
       padding-top: 10px;
 
-
-
     }
-
-
 
     .header {
-
       font-size: 2rem;
-
       text-align: center;
-
       color: #fff;
-
       font-weight: 900;
-
     }
-
-
 
     .info-button {
-
       position: absolute;
-
       top: 10px;
-
       left: 10px;
-
       background: none;
-
       border: none;
-
       color: #fff;
-
       font-size: 1.5rem;
-
       cursor: pointer;
-
     }
-
-
 
     .delete-button {
-
       position: absolute;
-
       top: 10px;
-
       right: 10px;
-
       background: none;
-
       border: none;
-
       color: #fff;
-
       font-size: 1.5rem;
-
       cursor: pointer;
-
     }
-
-
-
 
 
     .chat-area {
-
       flex-grow: 1;
-
       padding: 20px;
-
       overflow-y: auto;
-
       margin-bottom: 60px;
-
       display: flex;
-
       flex-direction: column;
-
     }
-
-
 
     .user-message,
-
     .assistant-message {
-
-
 
       border-radius: 15px;
-
       max-width: 75%;
-
       line-height: 1.4;
-
       word-wrap: break-word;
-
       position: relative;
-
       font-size: 1rem;
 
-
-
     }
-
-
 
     .user-message {
-
       margin: 15px 0;
-
       padding: 12px 10px;
-
       background-color: #333;
-
       color: white;
-
       margin-left: auto;
-
       text-align: left;
-
     }
-
-
 
     .assistant-message {
-
       background-color: none;
-
       color: #d1d5db;
 
-
-
     }
-
-
 
     .assistant-message .typing {
-
       color: #bbb;
-
       font-style: italic;
-
       text-align: left;
-
       font-size: 1em;
-
     }
-
-
 
     .input-container {
-
       display: flex;
-
       align-items: center;
-
       background-color: #333;
-
       padding: 5px 20px;
-
       border-radius: 50px;
-
       position: fixed;
-
       bottom: 30px;
-
       left: 50%;
-
       transform: translateX(-50%);
-
       max-width: 400px;
-
       width: calc(100% - 30px);
-
     }
-
-
 
     input {
-
       border: none;
-
       background: none;
-
       color: #fff;
-
       outline: none;
-
       flex: 1 1 95%;
-
       font-size: 1.1em;
-
       padding-right: 10px;
-
     }
-
-
 
     #sendButton {
-
       background: #fff;
-
       border: none;
-
       color: #212121;
-
       cursor: pointer;
-
       flex-shrink: 0;
-
       padding: 5px 10px;
-
       border-radius: 50%;
-
       font-size: 1.2rem
-
     }
-
-
-
-
 
 
 
     .message-box {
-
       color: #bbb;
-
       text-align: center;
-
       position: fixed;
-
       top: 98%;
-
       left: 50%;
-
       transform: translate(-50%, -50%);
-
       font-size: .8rem;
-
       border-radius: 10px;
-
       max-width: 400px;
-
       width: 80%;
-
       z-index: 10;
-
       pointer-events: none;
-
     }
-
-
 
     .help {
-
       display: flex;
-
       justify-content: center;
-
       align-items: center;
-
       height: 100vh;
-
       width: 100%;
-
       font-size: 2rem;
-
       text-align: center;
-
       white-space: nowrap;
-
       overflow: hidden;
-
       font-weight: 900;
-
     }
-
-
 
     /* Styling for code blocks */
-
     pre {
-
       background-color: #1e1e1e;
-
       color: #dcdcdc;
-
       padding: 20px;
-
       border-radius: 10px;
-
       overflow-x: auto;
-
       white-space: pre-wrap;
-
       word-wrap: break-word;
-
     }
-
-
 
     code {
-
       color: #dcdcdc;
-
     }
-
-
 
     /* Styling for horizontal rule (---) */
-
     .separator {
-
       border-top: 1px solid #444;
-
       margin: 15px 0;
-
     }
-
-
 
     .typing::after {
-
       content: '.';
-
       animation: dots 1s steps(5, end) infinite;
-
     }
-
-
 
     @keyframes dots {
 
-
-
       0%,
-
       20% {
-
         content: '.';
-
       }
-
-
 
       40% {
-
         content: '..';
-
       }
-
-
 
       60% {
-
         content: '...';
-
       }
-
     }
-
-
-
 
 
     .modal {
-
       display: none;
-
       /* Hidden by default */
-
       position: fixed;
-
       z-index: 11;
-
       left: 0;
-
       top: 0;
-
       width: 100%;
-
       height: 100%;
-
       overflow: auto;
-
       background-color: rgba(0, 0, 0, 0.8);
-
       align-items: center;
-
       justify-content: center;
-
     }
-
-
 
     .modal-content {
-
       position: relative;
-
       background-color: #333;
-
       margin: auto;
-
       padding: 20px;
-
       border-radius: 10px;
-
       max-width: 80%;
-
       text-align: center;
-
     }
-
-
 
     .modal img {
-
       width: 100%;
-
       height: auto;
-
       border-radius: 10px;
-
     }
-
-
 
     .close-btn,
-
     .download-btn {
-
       position: absolute;
-
       top: 10px;
-
       font-size: 1.2rem;
-
       cursor: pointer;
-
       color: #fff;
-
     }
-
-
 
     .close-btn {
-
       right: 10px;
-
       top: 4px;
-
       font-size: 2rem;
-
     }
-
-
 
     .download-btn {
-
       right: 50px;
-
     }
-
   </style>
-
 </head>
 
-
-
 <body>
-
   <div class="container">
-
     <div class="header">
-
       <button class="info-button" onclick="showInfo()"><i class="fas fa-info-circle"></i></button>
-
       Akira-AI
-
       <button class="delete-button" onclick="confirmDeletion()"><i class="fas fa-trash-alt"></i>
-
-
 
       </button>
 
-
-
     </div>
-
-
-
 
 
     <div class="chat-area" id="messages">
-
       <div class="help" id="helpText"></div>
-
     </div>
-
-
 
     <div class="input-container">
-
       <input type="text" id="inputField" placeholder="Chat with Akira-AI">
-
       <button id="sendButton" onclick="handleUserMessage()"><i class="fas fa-arrow-up"></i>
 
-
-
       </button>
-
     </div>
 
-
-
     <div class="message-box">Aku bukan babu. Check info untuk tutorial.</div>
-
   </div>
-
-
-
 
 
   <div id="imageModal" class="modal">
-
     <div class="modal-content">
-
       <span class="close-btn" onclick="closeModal()">&times;</span>
-
       <a id="downloadLink" class="download-btn" download><i class="fas fa-download"></i></a>
-
       <img id="modalImage" alt="Generated image">
-
     </div>
-
   </div>
-
-
 
   <head>
 
 
-
-
-
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"></script>
-
   </head>
 
 
-
-
-
   <script>
-
     function openModal(imageUrl) {
-
       const modal = document.getElementById("imageModal");
-
       const modalImage = document.getElementById("modalImage");
-
       const downloadLink = document.getElementById("downloadLink");
 
-
-
       modal.style.display = "flex"; // Display the modal
-
       modalImage.src = imageUrl; // Set the modal image source
-
       downloadLink.href = imageUrl; // Set the download link to the image URL
-
     }
-
-
 
     // Function to close the modal
-
     function closeModal() {
-
       document.getElementById("imageModal").style.display = "none";
-
     }
-
     const inputField = document.getElementById('inputField');
-
     const messages = document.getElementById('messages');
-
     const sendButton = document.getElementById('sendButton');
 
-
-
     // Escape HTML characters to prevent HTML code execution
-
     function escapeHTML(str) {
-
       return str.replace(/[&<>"']/g, function(char) {
-
         switch (char) {
-
           case '&':
-
             return '&amp;';
-
           case '<':
-
             return '&lt;';
-
           case '>':
-
             return '&gt;';
-
           case '"':
-
             return '&quot;';
-
           case "'":
-
             return '&#39;';
-
           default:
-
             return char;
-
         }
-
       });
-
     }
 
-
-
     // Function to parse Markdown-like formatting
-
     // Function to parse Markdown-like formatting
-
     function parseMarkdown(text) {
-
       // Escape HTML characters to prevent execution of HTML code
-
       text = escapeHTML(text);
 
-
-
       // Headers: Supports # through ######
-
       text = text.replace(/^######\s+(.*)$/gm, '<h6>$1</h6>');
-
       text = text.replace(/^#####\s+(.*)$/gm, '<h5>$1</h5>');
-
       text = text.replace(/^####\s+(.*)$/gm, '<h4>$1</h4>');
-
       text = text.replace(/^###\s+(.*)$/gm, '<h3>$1</h3>');
-
       text = text.replace(/^##\s+(.*)$/gm, '<h2>$1</h2>');
-
       text = text.replace(/^#\s+(.*)$/gm, '<h1>$1</h1>');
 
-
-
       // Horizontal rule (---)
-
       text = text.replace(/---/g, '<div class="separator"></div>');
 
-
-
       // Bold and Italics
-
       text = text.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>'); // Bold and Italic
-
       text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Bold
-
       text = text.replace(/_(.*?)_/g, '<em>$1</em>'); // Italic
 
-
-
       // Inline code `code`
-
       text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
 
-
-
       // Code block with ```
-
       text = text.replace(/```([\s\S]+?)```/g, '<pre><code>$1</code></pre>');
 
-
-
       // Links [text](URL)
-
       text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
 
-
-
       // Unordered list ( - or *)
-
       text = text.replace(/(?:^|\n)[*-]\s?(.*)/g, function(match, p1) {
-
         return `<ul><li>${p1}</li></ul>`;
-
       });
-
       text = text.replace(/<\/ul>\s*<ul>/g, ''); // Combine adjacent <ul> tags
 
-
-
       // Ordered list (1.)
-
       text = text.replace(/(?:^|\n)(\d+)\.\s?(.*)/g, function(match, p1, p2) {
-
         return `<ol><li>${p2}</li></ol>`;
-
       });
-
       text = text.replace(/<\/ol>\s*<ol>/g, ''); // Combine adjacent <ol> tags
 
-
-
       // Line breaks
-
       text = text.replace(/\n/g, '<br>');
-
       
-
       
-
       // Render inline math expressions \( ... \) and display math expressions \[ ... \]
-
   text = text.replace(/\\\((.+?)\\\)/g, (_, expr) => katex.renderToString(expr, { throwOnError: false }));
-
   text = text.replace(/\\\[(.+?)\\\]/g, (_, expr) => `<div style="text-align:center;">${katex.renderToString(expr, { throwOnError: false })}</div>`);
 
-
-
       return text;
-
     }
-
-
-
-
 
 
 
     // Handle the user message
-
     function handleUserMessage() {
-
       const userMessage = inputField.value;
-
       if (userMessage.trim() === "") return; // Don't send empty messages
-
       displayMessage(userMessage, 'user');
-
       inputField.value = '';
-
       fetchAssistantResponse(userMessage);
-
       document.getElementById('helpText').style.display = "none"
-
     }
-
-
 
     // Function to display user or assistant message
-
     function displayMessage(text, sender) {
-
       const messageDiv = document.createElement('div');
-
       messageDiv.className = sender === 'user' ? 'user-message' : 'assistant-message';
-
       messageDiv.innerHTML = parseMarkdown(text); // Use parseMarkdown to allow formatting
-
       messages.appendChild(messageDiv);
-
       messages.scrollTop = messages.scrollHeight; // Scroll to bottom
-
     }
-
-
-
-    // Fetch assistant's response (dummy response for now)
-
-    // Fetch assistant's response with "please wait" message for image generation
 
     async function fetchAssistantResponse(userMessage) {
-
       const typingDiv = document.createElement('div');
-
       typingDiv.className = 'assistant-message';
-
-      typingDiv.innerHTML = '<span class="typing">Assistant is typing</span>';
-
+      typingDiv.innerHTML = '<span class="typing">Akira-AI is typing</span>';
       messages.appendChild(typingDiv);
-
       messages.scrollTop = messages.scrollHeight;
 
-
-
       // Check if the message starts with "/imagine"
-
       if (userMessage.startsWith("/imagine")) {
-
         // Extract the prompt after the /imagine command
-
         const prompt = userMessage.replace("/imagine", "").trim();
-
         if (prompt) {
-
           try {
-
             // Update to show the "please wait" message
-
             typingDiv.innerHTML = '<span class="typing">Please wait while generating your image</span>';
 
-
-
             // Generate image URL
-
             const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}/?nologo=1`;
 
-
-
             // Create an image element and set an onload event to control the "please wait" message
-
             const image = document.createElement('img');
-
             image.src = imageUrl;
-
             image.alt = prompt;
-
             image.style = "width: 80%; border-radius: 10px; margin-top: 15px;";
 
-
-
             image.onclick = function() {
-
               openModal(imageUrl); // Open the modal on image click
-
             };
-
-
 
             // Event fires only once the image is fully loaded
-
             image.onload = function() {
-
               // Clear the "please wait" message after the image loads
-
               typingDiv.innerHTML = '';
-
               messages.appendChild(image);
-
               messages.scrollTop = messages.scrollHeight; // Scroll to bottom
-
             };
 
-
-
             // Append the loading message to the messages container
-
             messages.appendChild(image);
-
             messages.scrollTop = messages.scrollHeight; // Ensure chat scrolls down to new messages
-
           } catch (error) {
-
             typingDiv.innerHTML = "<span class='typing'>Error: Couldn't connect to the image server.</span>";
-
           }
-
         } else {
-
-          typingDiv.innerHTML = "<span class='typing'>Please provide a prompt after /imagine.</span>";
-
+          typingDiv.innerHTML = "<span class='typing'>Please tambahkan a prompt setelah /imagine.</span>";
         }
-
       } else {
-
         // Handle regular text responses
-
         const apiUrl = 'https://text.pollinations.ai/openai';
-
         const requestBody = {
-
           model: 'openai-gpt-3',
-
           messages: [{ role: 'user', content: userMessage }]
-
         };
 
-
-
         try {
-
           const response = await fetch(apiUrl, {
-
             method: 'POST',
-
             headers: { 'Content-Type': 'application/json' },
-
             body: JSON.stringify(requestBody)
-
           });
 
-
-
           if (response.ok) {
-
             const data = await response.json();
-
             const assistantMessage = data.choices[0].message.content;
 
-
-
             // Parse and display the assistant's response
-
             const formattedMessage = parseMarkdown(assistantMessage);
-
             typingDiv.innerHTML = ''; // Clear the typing indicator
-
             const messageDiv = document.createElement('div');
-
             messageDiv.className = 'assistant-message';
-
             messageDiv.innerHTML = formattedMessage;
-
             messages.appendChild(messageDiv);
-
             messages.scrollTop = messages.scrollHeight; // Scroll to bottom
-
           } else {
-
-            typingDiv.innerHTML = "<span class='typing'>Sorry, I couldn't process your request.</span>";
-
+            typingDiv.innerHTML = "<span class='typing'>Sorry, Akira tidak bisa memproses perintahmu.</span>";
           }
-
         } catch (error) {
-
-          typingDiv.innerHTML = "<span class='typing'>Error: Couldn't connect to the server.</span>";
-
+          typingDiv.innerHTML = "<span class='typing'>Error: Tidak dapat terhubung ke server.</span>";
         }
-
       }
-
     }
-
-
 
     // Typing effect of help
-
     const text = "What can I help you";
-
     const speed = 50; // typing speed in milliseconds
-
     let index = 0;
 
-
-
     function typeWriter() {
-
       if (index < text.length) {
-
         document.getElementById("helpText").innerHTML += text.charAt(index);
-
         index++;
-
         setTimeout(typeWriter, speed);
-
       }
-
     }
-
-
 
     // Show info popup using SweetAlert2
-
     function showInfo() {
-
       Swal.fire({
-
           title: 'Welcome human',
-
           html: `
-
       <p style="color: #bbb; font-size: 1rem; line-height: 1.5;">
-
         Akira-AI is your virtual assistant. Here’s how to get started:
-
       </p>
-
       <ul style="color: #bbb; font-size: 0.9rem; line-height: 1.4; padding-left: 20px;">
-
-        <li><strong>/ imagine</strong>: Type this followed by a description to generate images.</li>
-
+        <li><strong>/ imagine</strong>: ketik dan ikuti desktipsi untuk generate foto.</li>
       </ul>
-
       <p style="color: #bbb; font-size: 1rem; line-height: 1.5;">
-
         Use the text input at the bottom to type your commands or questions.
-
       </p>
-
     `,
-
           icon: 'info',
-
-          confirmButtonText: 'Got it!',
-
+          confirmButtonText: 'Siap!',
           background: '#212121',
-
           color: '#d1d5db',
-
           confirmButtonColor: '#333'
-
         })
-
         .then(() => {
-
           // Start the typewriter effect after the user closes the info alert
-
           typeWriter();
-
         });
-
     }
-
     // Start typing effect when page loads
-
     window.onload = showInfo;
 
 
-
-
-
     function confirmDeletion() {
-
       Swal.fire({
-
-        title: 'Are you sure?',
-
-        text: "You won't be able to revert this action!",
-
+        title: 'Apa kamu yakin?',
+        text: "kamu tidak akan bisa mengulangnya lagi!",
         icon: 'warning',
-
         showCancelButton: true,
-
-        confirmButtonText: 'Yes, delete it!',
-
-        cancelButtonText: 'No, cancel!',
-
+        confirmButtonText: 'Ya, hapus!',
+        cancelButtonText: 'Tidak, cancel!',
         reverseButtons: true,
-
         background: '#212121', // Background color
-
         color: '#d1d5db', // Text color
-
         confirmButtonColor: '#333', // Confirm button color
-
         cancelButtonColor: '#d1d5db', // Cancel button color
-
       }).then((result) => {
-
         if (result.isConfirmed) {
-
           // If 'Yes' is clicked, reload the page
-
           location.reload();
-
         } else if (result.dismiss === Swal.DismissReason.cancel) {
-
           // If 'No' is clicked, show a custom styled cancel message
-
           Swal.fire({
-
             title: 'Cancelled',
-
             text: 'Your messages are safe.',
-
             icon: 'error',
-
             background: '#212121', // Background color
-
             color: '#d1d5db', // Text color
-
             confirmButtonColor: '#333' // Confirm button color
-
           });
-
         }
-
       });
-
     }
-
   </script>
-
 </body>
-
-
-
 </html>
