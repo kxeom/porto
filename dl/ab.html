@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Downloader</title>
+    <meta name="robots" content="index, follow" /> 
+    <meta name="author" content="jackwiel" />
+    <meta property="og:url" content="https://akira.eu5.org/" /> 
+    <meta property="og:image" content="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXvsppLAcRZkjD-pwbaakdB4yOGkX6-SHFmUOt-WYqNK6FAgcUJi2PcSjr&s=10" />
+        <link rel="icon" href="https://h2rsi9anqnqbkvkf.public.blob.vercel-storage.com/U2nNivB-5j8ilNFHb5kCG95WdkTZpUehpLGzFn.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.cdnfonts.com/css/public-pixel" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="p-4 min-h-screen flex items-center justify-center"><button id="githubBtn" class="absolute top-4 right-4 p-2 rounded-md flex items-center">
+        <i class='fab fa-ubuntu' style='font-size:36px'></i>
+    </button>
+    <button id="aboutBtn" class="absolute top-4 left-4 p-2 rounded-md flex items-center">
+        <i class='fas fa-exclamation-circle' style='font-size:36px'></i>
+    </button>
+    <div class="container max-w-3xl">
+        <div class="neo-box neo-morphic rounded-lg p-8 mb-8">
+            <h1 class="text font-bold mb-4" align="center">Akira Downloader</h1>
+            <input type="text" id="urlInput" placeholder="Masukkan URL Spotify atau Instagram" class="neo-input w-full p-2 mb-4 rounded-md neo-morphic" />
+            <button id="downloadBtn" class="neo-button w-full p-2 text-white rounded-md">Cari</button>
+            <div id="result" class="neo-result mt-4 p-4 rounded-md neo-morphic"></div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="akira.js"></script></script>
+    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+    <script>
+      document.getElementById('aboutBtn').addEventListener('click', () => {
+    Swal.fire({
+        title: 'About',
+        text: 'Aplikasi ini dibuat dengan cinta oleh Akira. Ini adalah alat untuk mendownload lagu dari Spotify dan Instagram.',
+        icon: 'info',
+        confirmButtonText: 'OK'
+    });
+});
+      
+    </script>
+    <script>
+      document.getElementById('githubBtn').addEventListener('click', () => {
+        Swal.fire({
+  title: "Submit username Github anda",
+  input: "text",
+  inputAttributes: {
+    autocapitalize: "off"
+  },
+  showCancelButton: true,
+  confirmButtonText: "Cari",
+  showLoaderOnConfirm: true,
+  preConfirm: async (login) => {
+    try {
+      const githubUrl = `
+        https://api.github.com/users/${login}
+      `;
+      const response = await fetch(githubUrl);
+      if (!response.ok) {
+        return Swal.showValidationMessage(`
+          ${JSON.stringify(await response.json())}
+        `);
+      }
+      return response.json();
+    } catch (error) {
+      Swal.showValidationMessage(`
+        Request failed: ${error}
+      `);
+    }
+  },
+  allowOutsideClick: () => !Swal.isLoading()
+}).then((result) => {
+  if (result.isConfirmed) {
+    Swal.fire({
+      title: `${result.value.login}'s avatar`,
+      imageUrl: result.value.avatar_url
+    });
+  }
+});
+    
+});
+    </script>
+</body>
+</html>
