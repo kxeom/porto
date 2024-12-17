@@ -1,0 +1,125 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet Checker $PENGU</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h1, p {
+            color: #333;
+        }
+
+        input {
+            padding: 10px;
+            margin: 10px 0;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* Popup style */
+        #jumpscarePopup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #jumpscarePopup img {
+            max-width: 80%;
+            max-height: 80%;
+            animation: shake 0.5s infinite;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            25% { transform: translate(-1px, -2px) rotate(-1deg); }
+            50% { transform: translate(-3px, 0px) rotate(1deg); }
+            75% { transform: translate(3px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -1px) rotate(1deg); }
+        }
+    </style>
+</head>
+<body>
+    <h1>Wallet Checker $PENGU</h1>
+    <p>Masukkan wallet address Anda:</p>
+    <input type="text" id="walletInput" placeholder="Contoh: 0xABC123...">
+    <button id="checkBtn">Check Wallet</button>
+
+    <!-- Popup dengan gambar -->
+    <div id="jumpscarePopup">
+        <img src="https://i.pinimg.com/736x/41/39/6e/41396e44ec3e95a751ed10d3c8ddb514.jpg" alt="Jumpscare Image">
+    </div>
+
+    <!-- Pemutar audio lokal -->
+    <audio id="audio" preload="auto">
+        <source src="https://www.smanegeri1seisuka.sch.id/pengu/tertipu.mp3" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        const checkBtn = document.getElementById("checkBtn");
+        const walletInput = document.getElementById("walletInput");
+        const jumpscarePopup = document.getElementById("jumpscarePopup");
+        const audio = document.getElementById("audio");
+
+        let isPlaying = false;
+
+        // Fungsi untuk memulai audio dari detik 52 sampai detik 60
+        function playAudioLoop() {
+            audio.currentTime = 52;  // Mulai dari detik 52
+            audio.play();
+            
+            audio.onended = function() {
+                if (!isPlaying) {
+                    isPlaying = true;
+                    audio.currentTime = 52; // Ulang dari detik 52
+                    audio.play();
+                }
+            };
+        }
+
+        checkBtn.addEventListener("click", function () {
+            if (walletInput.value.trim() === "") {
+                alert("Harap masukkan wallet address!");
+                return;
+            }
+
+            // Tampilkan gambar jumpscare
+            jumpscarePopup.style.display = "flex";
+
+            // Putar audio dari detik 52
+            playAudioLoop();
+        });
+    </script>
+</body>
+</html>
