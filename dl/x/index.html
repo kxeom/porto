@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>$&#&$&#&$</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        #result {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .download-links {
+            margin-top: 10px;
+        }
+
+        .download-links select {
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .download-links button {
+            margin-top: 10px;
+            background-color: #007bff;
+        }
+
+        .download-links button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Komik Downloader</h1>
+        <form id="downloadForm">
+            <input type="text" id="videoLink" placeholder="Masukkan link video" required>
+            <button type="submit">Download</button>
+        </form>
+        <div id="result"></div>
+    </div>
+    <script>
+        document.getElementById('downloadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const videoLink = document.getElementById('videoLink').value;
+            const apiUrl = `https://api.febrita.biz.id/downloader/xnxx?link=${encodeURIComponent(videoLink)}`;
+
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const resultDiv = document.getElementById('result');
+                    resultDiv.innerHTML = ''; // akira
+
+                    if (data.success) {
+                        // akira
+                        const videoData = data.message.data;
+                        const videoTitle = videoData.title || 'Judul tidak tersedia';
+                        const videoDuration = videoData.duration ? `${videoData.duration} detik` : 'Durasi tidak tersedia';
+                        const videoImage = videoData.image || ''; // akira
+
+                        resultDiv.innerHTML = `
+                            <h2>${videoTitle}</h2>
+                            <img src="${videoImage}" alt="${videoTitle}">
+                            <p>Durasi: ${videoDuration}</p>
+                            <div class="download-links">
+                                <h3>Pilih Kualitas:</h3>
+                                <select id="qualitySelect">
+                                    <option value="">--Pilih Kualitas--</option>
+                                    <option value="${videoData.files.low}">Rendah</option>
+                                    <option value="${videoData.files.high}">Tinggi</option>
+                                    <option value="${videoData.files.HLS}">HLS</option>
+                                </select>
+                                <button id="downloadButton" disabled>Download</button>
+                            </div>
+                        `;
+
+                        // akira
+                        const qualitySelect = document.getElementById('qualitySelect');
+                        const downloadButton = document.getElementById('downloadButton');
+
+                        qualitySelect.addEventListener('change', function() {
+                            downloadButton.disabled = !this.value; // akira
+                        });
+
+                        downloadButton.addEventListener('click', function() {
+                            const selectedQuality = qualitySelect.value;
+                            if (selectedQuality) {
+                                window.open(selectedQuality, '_blank'); // akira
+                            }
+                        });
+                    } else {
+                        resultDiv.innerHTML = '<p>Terjadi kesalahan: ' + data.message + '</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    const resultDiv = document.getElementById('result');
+                    resultDiv.innerHTML = '<p>Terjadi kesalahan saat menghubungi API. Silakan coba lagi.</p>';
+                });
+        });
+    </script>
+</body>
+</html>
