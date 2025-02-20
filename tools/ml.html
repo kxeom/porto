@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cek Data ML</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            background-color: #1a1a1a; /* Latar belakang hitam */
+            color: #ffffff; /* Teks putih */
+        }
+        .neobrutalism {
+            background: rgba(30, 30, 30, 0.9); /* Latar belakang gelap */
+            border: 2px solid rgba(255, 255, 255, 0.2); /* Border putih transparan */
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+    <div class="neobrutalism p-8 w-96">
+        <h1 class="text-2xl font-bold mb-4 text-center">Cek Data ML</h1>
+        <form id="cekForm">
+            <label for="userId" class="block mb-2">User  ID:</label>
+            <input type="text" id="userId" required class="border border-gray-600 p-2 rounded w-full mb-4 bg-gray-800 text-white">
+            
+            <label for="zoneId" class="block mb-2">Zone ID:</label>
+            <input type="text" id="zoneId" required class="border border-gray-600 p-2 rounded w-full mb-4 bg-gray-800 text-white">
+            
+            <button type="submit" class="bg-blue-600 text-white p-2 rounded w-full hover:bg-blue-700 transition">Cek</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('cekForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const userId = document.getElementById('userId').value;
+            const zoneId = document.getElementById('zoneId').value;
+
+            fetch(`https://api.ryzendesu.vip/api/stalk/cekml?userId=${userId}&zoneId=${zoneId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: data.error,
+                            icon: 'error',
+                            confirmButtonText: 'Cari Data Lain',
+                            background: '#333333', // Latar belakang pop-up
+                            color: '#ffffff' // Teks putih
+                        });
+                    } else {
+                        
+                        const resultHtml = `
+                            <div>
+                                <h2 class="font-bold">AKRA RESULT</h2>
+                                <p><strong>Username:</strong> ${data.username}</p>
+                                <p><strong>Region:</strong> ${data.region}</p>
+                            </div>
+                        `;
+
+                        Swal.fire({
+                            title: 'Hasil Data ML',
+                            html: resultHtml,
+                            icon: 'success',
+                            confirmButtonText: 'Cari Data Lain',
+                            background: '#333333', // Latar belakang pop-up
+                            color: '#ffffff' // Teks putih
+                        });
+                    }
+                })
+                .catch(error => {
+                    Swal.fire({
+                        title: 'Terjadi kesalahan!',
+                        text: 'Kesalahan: ' + error,
+                        icon: 'error',
+                        confirmButtonText: 'Cari Data Lain',
+                        background: '#333333', // Latar belakang pop-up
+                        color: '#ffffff' // Teks putih
+                    });
+                });
+        });
+    </script>
+</body>
+</html>
