@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Jadwal Sholat Subang - Dapatkan informasi jadwal sholat harian untuk kota Subang.">
+    <meta name="keywords" content="Jadwal Sholat, Subang, Islam, Waktu Sholat">
+    <meta name="author" content="Nama Anda">
+    <link rel="icon" href="https://static.thenounproject.com/png/1793485-512.png" type="image/png">
+    <title>Jadwal Sholat Subang</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+</head>
+<body class="bg-gray-100">
+
+    <div id="app" class="container mx-auto p-5">
+        <h1 class="text-4xl font-bold text-center mb-5 text-blue-600">Jadwal Sholat</h1>
+        <div class="bg-white shadow-lg rounded-lg p-6 mb-5">
+            <h2 class="text-2xl font-semibold mb-3">{{ jadwal.lokasi }}</h2>
+            <p class="text-gray-600">{{ jadwal.daerah }}</p>
+            <p class="mt-3 text-gray-500">Tanggal: {{ jadwal.jadwal.tanggal }}</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-5">
+                <div class="bg-blue-100 p-4 rounded-lg shadow hover:shadow-xl transition-shadow duration-300">
+                    <i class="fas fa-sun text-yellow-500 text-2xl"></i>
+                    <h3 class="text-lg font-semibold mt-2">Imsak</h3>
+                    <p class="text-xl font-bold">{{ jadwal.jadwal.imsak }}</p>
+                    <p class="text-gray-600">{{ timeUntil(jadwal.jadwal.imsak) }}</p>
+                </div>
+                <div class="bg-blue-100 p-4 rounded-lg shadow hover:shadow-xl transition-shadow duration-300">
+                    <i class="fas fa-moon text-blue-500 text-2xl"></i>
+                    <h3 class="text-lg font-semibold mt-2">Subuh</h3>
+                    <p class="text-xl font-bold">{{ jadwal.jadwal.subuh }}</p>
+                    <p class="text-gray-600">{{ timeUntil(jadwal.jadwal.subuh) }}</p>
+                </div>
+                <div class="bg-blue-100 p-4 rounded-lg shadow hover:shadow-xl transition-shadow duration-300">
+                    <i class="fas fa-sun text-yellow-500 text-2xl"></i>
+                    <h3 class="text-lg font-semibold mt-2">Terbit</h3>
+                    <p class="text-xl font-bold">{{ jadwal.jadwal.terbit }}</p>
+                    <p class="text-gray-600">{{ timeUntil(jadwal.jadwal.terbit) }}</p>
+                </div>
+                <div class="bg-blue-100 p-4 rounded-lg shadow hover:shadow-xl transition-shadow duration-300">
+                    <i class="fas fa-sun text-yellow-500 text-2xl"></i>
+                    <h3 class="text-lg font-semibold mt-2">Dhuha</h3>
+                    <p class="text-xl font-bold">{{ jadwal.jadwal.dhuha }}</p>
+                    <p class="text-gray-600">{{ timeUntil(jadwal.jadwal.dhuha) }}</p>
+                </div>
+                <div class="bg-blue-100 p-4 rounded-lg shadow hover:shadow-xl transition-shadow duration-300">
+                    <i class="fas fa-clock text-blue-500 text -2xl"></i>
+                    <h3 class="text-lg font-semibold mt-2">Dzuhur</h3>
+                    <p class="text-xl font-bold">{{ jadwal.jadwal.dzuhur }}</p>
+                    <p class="text-gray-600">{{ timeUntil(jadwal.jadwal.dzuhur) }}</p>
+                </div>
+                <div class="bg-blue-100 p-4 rounded-lg shadow hover:shadow-xl transition-shadow duration-300">
+                    <i class="fas fa-clock text-blue-500 text-2xl"></i>
+                    <h3 class="text-lg font-semibold mt-2">Ashar</h3>
+                    <p class="text-xl font-bold">{{ jadwal.jadwal.ashar }}</p>
+                    <p class="text-gray-600">{{ timeUntil(jadwal.jadwal.ashar) }}</p>
+                </div>
+                <div class="bg-blue-100 p-4 rounded-lg shadow hover:shadow-xl transition-shadow duration-300">
+                    <i class="fas fa-clock text-blue-500 text-2xl"></i>
+                    <h3 class="text-lg font-semibold mt-2">Maghrib</h3>
+                    <p class="text-xl font-bold">{{ jadwal.jadwal.maghrib }}</p>
+                    <p class="text-gray-600">{{ timeUntil(jadwal.jadwal.maghrib) }}</p>
+                </div>
+                <div class="bg-blue-100 p-4 rounded-lg shadow hover:shadow-xl transition-shadow duration-300">
+                    <i class="fas fa-clock text-blue-500 text-2xl"></i>
+                    <h3 class="text-lg font-semibold mt-2">Isya</h3>
+                    <p class="text-xl font-bold">{{ jadwal.jadwal.isya }}</p>
+                    <p class="text-gray-600">{{ timeUntil(jadwal.jadwal.isya) }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                jadwal: {}
+            },
+            mounted() {
+                fetch('https://api.ryzendesu.vip/api/search/jadwal-sholat?kota=subang')
+                    .then(response => response.json())
+                    .then(data => {
+                        this.jadwal = data.schedules[0];
+                        this.checkAdzanTime();
+                    });
+            },
+            methods: {
+                timeUntil(adzanTime) {
+                    const now = new Date();
+                    const [hours, minutes] = adzanTime.split(':').map(Number);
+                    const adzanDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes);
+                    const diff = adzanDate - now;
+
+                    if (diff < 0) {
+                        return "Sudah lewat";
+                    }
+
+                    const hoursLeft = Math.floor(diff / 1000 / 60 / 60);
+                    const minutesLeft = Math.floor((diff / 1000 / 60) % 60);
+                    return `${hoursLeft} jam ${minutesLeft} menit lagi`;
+                },
+                checkAdzanTime() {
+                    setInterval(() => {
+                        const now = new Date();
+                        const currentTime = now.getHours() + ':' + now.getMinutes();
+                        const adzanTimes = [
+                            this.jadwal.jadwal.imsak,
+                            this.jadwal.jadwal.subuh,
+                            this.jadwal.jadwal.dhuha,
+                            this.jadwal.jadwal.dzuhur,
+                            this.jadwal.jadwal.ashar,
+                            this.jadwal.jadwal.maghrib,
+                            this.jadwal.jadwal.isya
+                        ];
+
+                        if (adzanTimes.includes(currentTime)) {
+                            Swal.fire({
+                                title: 'Waktunya Sholat!',
+                                text: 'Segera kerjakan sholat.',
+                                icon: 'info',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    }, 60000); // Cek setiap menit
+                }
+            }
+        });
+    </script>
+
+</body>
+  </html>
